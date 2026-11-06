@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>特教數學：盒子畫圈接數加法 (20題互動練習與A4列印)</title>
+  <style>
+    :root {
+      --primary: #1e5aa8;
+      --primary-light: #e3f2fd;
+      --primary-dark: #123d75;
+      --secondary: #2e7d32;
+      --secondary-light: #e8f5e9;
+      --accent: #f57c00;
+      --accent-light: #fff3e0;
+      --border-color: #334155;
+      --bg-soft: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --circle-color: #2563eb;
+      --circle-active: #e11d48;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", "PingFang TC", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #eef2f6;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 頂部導航欄 */
+    header {
+      background: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 2px solid #cbd5e1;
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 10px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 28px;
+      background: var(--primary-light);
+      padding: 6px 10px;
+      border-radius: 12px;
+      border: 2px solid var(--primary);
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary-dark);
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      color: var(--text-main);
+      border-color: #cbd5e1;
+    }
+    .btn-outline:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .btn-success {
+      background: var(--secondary);
+      color: #ffffff;
+      border-color: #1b5e20;
+    }
+
+    .btn-amber {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: #e65100;
+    }
+
+    /* 題號進度條 */
+    .progress-bar-container {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 8px 16px;
+    }
+
+    .progress-bar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+
+    .q-chip {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid #cbd5e1;
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 700;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .q-chip.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
+      transform: scale(1.12);
+      box-shadow: 0 2px 8px rgba(30, 90, 168, 0.4);
+    }
+
+    .q-chip.solved {
+      border-color: var(--secondary);
+      background: var(--secondary-light);
+      color: var(--secondary);
+    }
+
+    .q-chip.solved.active {
+      background: var(--secondary);
+      color: #ffffff;
+    }
+
+    /* 主要作答舞台 */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 16px auto;
+      padding: 0 16px 40px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border: 2px solid #e2e8f0;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    /* 指導語與提示欄 */
+    .instruction-banner {
+      background: #fffbeb;
+      border-left: 6px solid #f59e0b;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .instruction-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #92400e;
+      letter-spacing: 0.5px;
+      line-height: 1.5;
+    }
+
+    .instruction-sub {
+      font-size: 0.95rem;
+      color: #b45309;
+      font-weight: 600;
+    }
+
+    .voice-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1.5px solid #f59e0b;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #b45309;
+      cursor: pointer;
+    }
+
+    /* 題目題幹標題 */
+    .problem-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px dashed #e2e8f0;
+    }
+
+    .problem-title {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: 1px;
+    }
+
+    .problem-badge {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    /* 核心佈局：盒子 ➔ 畫圈區 = 答案框 (嚴格還原圖片樣式) */
+    .math-work-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    /* 1. 盒子裡的數 */
+    .box-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .num-box {
+      width: 140px;
+      height: 96px;
+      background-color: var(--primary-light);
+      border: 4px solid var(--primary);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(30, 90, 168, 0.15);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .num-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(30, 90, 168, 0.25);
+    }
+
+    .num-box:active {
+      transform: scale(0.96);
+    }
+
+    .box-hint {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* 2. 箭頭 */
+    .arrow-sign {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--primary);
+      user-select: none;
+    }
+
+    /* 3. 畫圈區 (虛線長方框) */
+    .circle-work-area {
+      flex: 1 1 360px;
+      min-height: 96px;
+      border: 3px dashed #94a3b8;
+      border-radius: 10px;
+      background-color: #fafbfc;
+      padding: 10px 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .circle-work-area:hover {
+      border-color: var(--primary);
+      background-color: #f0f7ff;
+    }
+
+    .circle-watermark {
+      font-size: 0.95rem;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 8px;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .circles-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      min-height: 48px;
+    }
+
+    /* 圓圈樣式 */
+    .count-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 3.5px solid var(--circle-color);
+      background: #ffffff;
+      color: var(--circle-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+      user-select: none;
+      position: relative;
+    }
+
+    .count-circle:hover {
+      transform: scale(1.15);
+      border-color: #1d4ed8;
+      background: #eff6ff;
+    }
+
+    /* 接數高亮狀態 */
+    .count-circle.counted {
+      background: #fef08a;
+      border-color: #ca8a04;
+      color: #854d0e;
+      transform: scale(1.08);
+    }
+
+    .count-circle.active-counting {
+      background: #ffe4e6;
+      border-color: #e11d48;
+      color: #9f1239;
+      transform: scale(1.22);
+      box-shadow: 0 0 12px rgba(225, 29, 72, 0.5);
+    }
+
+    .count-circle.last-one {
+      background: #dcfce7;
+      border-color: #16a34a;
+      color: #14532d;
+      box-shadow: 0 0 12px rgba(22, 163, 74, 0.4);
+    }
+
+    /* 4. 等號 */
+    .equal-sign {
+      font-size: 3rem;
+      font-weight: 900;
+      color: #0f172a;
+      user-select: none;
+    }
+
+    /* 5. 右邊方框 (答案輸入框) */
+    .ans-box-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ans-box {
+      width: 104px;
+      height: 96px;
+      border: 4px solid #0f172a;
+      border-radius: 8px;
+      background: #ffffff;
+      font-size: 3.2rem;
+      font-weight: 900;
+      text-align: center;
+      color: #0f172a;
+      outline: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      transition: all 0.2s ease;
+      caret-color: var(--primary);
+    }
+
+    .ans-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(30, 90, 168, 0.2);
+    }
+
+    .ans-box.correct {
+      border-color: var(--success);
+      background: var(--secondary-light);
+      color: var(--success);
+    }
+
+    .ans-box.wrong {
+      border-color: var(--danger);
+      background: #fef2f2;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* 輔助畫圈按鈕工具列 */
+    .circle-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .badge-counter {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: 800;
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .badge-counter.complete {
+      background: var(--secondary-light);
+      color: var(--secondary);
+      border: 2px solid var(--secondary);
+    }
+
+    .badge-counter.overflow {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #b91c1c;
+    }
+
+    /* 接數引導語音控制列 */
+    .counting-action-bar {
+      margin-top: 20px;
+      background: #f8fafc;
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .counting-status-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 螢幕虛擬大數字鍵盤 (特教友善觸控) */
+    .keypad-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 2px solid #e2e8f0;
+    }
+
+    .keypad-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+      max-width: 540px;
+    }
+
+    .key-btn {
+      height: 54px;
+      border-radius: 10px;
+      border: 2px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .key-btn:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+    }
+
+    .key-btn:active {
+      transform: scale(0.94);
+      background: #e2e8f0;
+    }
+
+    .key-btn.action-clear {
+      background: #fee2e2;
+      border-color: #fca5a5;
+      color: #991b1b;
+      font-size: 1.1rem;
+    }
+
+    .key-btn.action-submit {
+      background: #dcfce7;
+      border-color: #86efac;
+      color: #166534;
+      font-size: 1.15rem;
+      grid-column: span 2;
+    }
+
+    /* 四選一推薦選項 (選項點選作答) */
+    .choices-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .choice-chip {
+      padding: 10px 22px;
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .choice-chip:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    /* 底部作答導航 */
+    .bottom-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* 彩花與通關彈窗 */
+    #celebrationModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 24px;
+      max-width: 480px;
+      width: 100%;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .trophy-icon {
+      font-size: 72px;
+      margin-bottom: 12px;
+      animation: bounce 1.2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* 列印專用樣式 (A4 Paper Print) */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+
+      header, .progress-bar-container, .nav-actions, .circle-controls, .keypad-section, .bottom-nav, #celebrationModal, .screen-only {
+        display: none !important;
+      }
+
+      main {
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .card {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+      }
+
+      .print-page {
+        page-break-after: always;
+        padding: 12mm 10mm;
+      }
+
+      .print-header {
+        display: block !important;
+        border-bottom: 2px solid #000;
+        padding-bottom: 8px;
+        margin-bottom: 12px;
+      }
+
+      .print-title {
+        font-size: 18pt;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .print-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12pt;
+        margin-top: 6px;
+      }
+
+      .print-instructions {
+        font-size: 11pt;
+        font-weight: bold;
+        margin: 8px 0 14px;
+        padding: 4px 8px;
+        background: #f0f0f0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .print-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        row-gap: 14px;
+      }
+
+      .print-item {
+        break-inside: avoid;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding-bottom: 10px;
+        border-bottom: 1px dotted #aaa;
+      }
+
+      .print-item-title {
+        font-size: 15pt;
+        font-weight: bold;
+      }
+
+      .print-item-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .print-box {
+        width: 100px;
+        height: 60px;
+        border: 3px solid #1e5aa8 !important;
+        background: #e3f2fd !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24pt;
+        font-weight: bold;
+        color: #1e5aa8 !important;
+      }
+
+      .print-arrow {
+        font-size: 20pt;
+        font-weight: bold;
+        color: #1e5aa8 !important;
+      }
+
+      .print-circle-area {
+        flex: 1;
+        height: 60px;
+        border: 2px dashed #666 !important;
+        padding: 4px 8px;
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .print-circle-watermark {
+        position: absolute;
+        top: 2px;
+        left: 6px;
+        font-size: 8pt;
+        color: #888;
+      }
+
+      .print-equal {
+        font-size: 22pt;
+        font-weight: bold;
+      }
+
+      .print-ans-box {
+        width: 70px;
+        height: 60px;
+        border: 3px solid #000 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22pt;
+        font-weight: bold;
+      }
+
+      .print-teacher-ans {
+        color: #dc2626 !important;
+      }
+
+      .print-teacher-circles {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .print-mini-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 2px solid #2563eb !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9pt;
+        font-weight: bold;
+        color: #dc2626 !important;
+      }
+    }
+
+    .print-header {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部導航列 -->
+  <header class="screen-only">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">📦➔⭕</div>
+        <div>
+          <div class="brand-title">盒子畫圈接數加法 (特教練習)</div>
+          <div class="brand-subtitle">第一個數1~50 ＋ 後面的數1~20 ｜ 共 20 題</div>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-outline" id="btnSoundToggle" title="切換聲音">
+          🔊 聲音：開
+        </button>
+        <button class="btn btn-amber" id="btnTeacherDemo" title="教師示範這題的接數過程">
+          👨‍🏫 課堂示範
+        </button>
+        <button class="btn btn-primary" id="btnRandomize" title="產生全新的一組 20 題">
+          🎲 重新出20題
+        </button>
+        <button class="btn btn-outline" id="btnPrintWorksheet" title="列印成紙筆學習單">
+          🖨️ A4學習單列印
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 20題進度與快速跳題 -->
+  <div class="progress-bar-container screen-only">
+    <div class="progress-bar-inner" id="questionTabs">
+      <!-- 題號 1~20 由 JS 渲染 -->
+    </div>
+  </div>
+
+  <!-- 主要互動卡片 -->
+  <main class="screen-only">
+    <div class="card">
+      
+      <!-- 特教視覺指導語 -->
+      <div class="instruction-banner">
+        <div>
+          <div class="instruction-text">
+            👉 只畫圈，不寫數字。嘴巴從盒子的數接著數，答案寫在右邊的框框。
+          </div>
+          <div class="instruction-sub">
+            💡 步驟：①看盒子裡的數記住 ➔ ②點擊虛線區畫圈圈 ➔ ③嘴巴依序點圈圈接著數 ➔ ④填上答案！
+          </div>
+        </div>
+        <button class="voice-badge" id="btnReadInstruction">
+          🔊 念指導語
+        </button>
+      </div>
+
+      <!-- 題幹資訊 -->
+      <div class="problem-header">
+        <div class="problem-title" id="problemTitle">第 1 題. 5 + 4 =</div>
+        <div class="problem-badge" id="problemProgressBadge">題號 1 / 20</div>
+      </div>
+
+      <!-- 核心區塊：[盒子 5] ➔ [畫圈區] = [答案框] (100%還原使用者圖檔) -->
+      <div class="math-work-row">
+        <!-- 1. 盒子 -->
+        <div class="box-container">
+          <div class="num-box" id="boxNumber" title="點擊盒子可發出發音">5</div>
+          <div class="box-hint">👆 盒子裡的數</div>
+        </div>
+
+        <!-- 2. 箭頭 -->
+        <div class="arrow-sign">➔</div>
+
+        <!-- 3. 畫圈區 (虛線長方框) -->
+        <div class="circle-work-area" id="circleWorkArea" title="點擊這裡可畫出一個圓圈">
+          <div class="circle-watermark">
+            <span>畫圈區（不寫數字，用嘴巴數）</span>
+            <span id="circleCountNotice" style="font-weight:700; color:#2563eb;">點一下畫一個圈</span>
+          </div>
+          <div class="circles-grid" id="circlesGrid">
+            <!-- 圓圈動態置入 -->
+          </div>
+        </div>
+
+        <!-- 4. 等號 -->
+        <div class="equal-sign">=</div>
+
+        <!-- 5. 答案框 -->
+        <div class="ans-box-container">
+          <input type="number" inputmode="numeric" class="ans-box" id="ansInput" placeholder="?" autocomplete="off" />
+          <div class="box-hint">✍️ 寫答案</div>
+        </div>
+      </div>
+
+      <!-- 畫圈輔助工具列 -->
+      <div class="circle-controls">
+        <div class="badge-counter" id="circleTargetBadge">
+          需要畫圈：0 / 4 個
+        </div>
+        <button class="btn btn-primary" id="btnAddCircle">
+          ➕ 畫一個圈
+        </button>
+        <button class="btn btn-outline" id="btnRemoveCircle">
+          ➖ 擦掉一個圈
+        </button>
+        <button class="btn btn-success" id="btnAutoFillCircles">
+          ✨ 一鍵畫好圈
+        </button>
+        <button class="btn btn-outline" id="btnClearCircles" style="color:#b91c1c;">
+          🗑️ 全部重畫
+        </button>
+      </div>
+
+      <!-- 嘴巴接著數語音互動列 -->
+      <div class="counting-action-bar">
+        <div class="counting-status-text" id="countingStatusText">
+          🗣️ 畫好圈後，點按圈圈或點右邊按鈕，聽聽看怎麼接數！
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn btn-amber" id="btnAutoCount">
+            🔊 聽電腦示範接著數
+          </button>
+          <button class="btn btn-outline" id="btnResetCount">
+            🔄 重新點數
+          </button>
+        </div>
+      </div>
+
+      <!-- 選項點擊作答區 (四選一，特教免打字超貼心) -->
+      <div style="margin-top: 20px;">
+        <div style="font-size: 1rem; font-weight:700; color:var(--text-muted); margin-bottom:8px;">
+          🎯 快速點選答案（或使用下方鍵盤）：
+        </div>
+        <div class="choices-row" id="choicesRow">
+          <!-- 4個選項由 JS 自動計算生成 -->
+        </div>
+      </div>
+
+      <!-- 螢幕觸控大鍵盤 (0~9) -->
+      <div class="keypad-section">
+        <div class="keypad-title">
+          <span>⌨️ 螢幕數字鍵盤（平板觸控友善）</span>
+          <span style="font-size:0.85rem; color:#64748b;">也可以用實體鍵盤直接打字</span>
+        </div>
+        <div class="keypad-grid">
+          <button class="key-btn" data-key="1">1</button>
+          <button class="key-btn" data-key="2">2</button>
+          <button class="key-btn" data-key="3">3</button>
+          <button class="key-btn" data-key="4">4</button>
+          <button class="key-btn" data-key="5">5</button>
+          <button class="key-btn action-clear" id="btnKeyClear">⌫ 清除</button>
+
+          <button class="key-btn" data-key="6">6</button>
+          <button class="key-btn" data-key="7">7</button>
+          <button class="key-btn" data-key="8">8</button>
+          <button class="key-btn" data-key="9">9</button>
+          <button class="key-btn" data-key="0">0</button>
+          <button class="key-btn action-submit" id="btnKeySubmit">✅ 檢查答案</button>
+        </div>
+      </div>
+
+      <!-- 下方導航 -->
+      <div class="bottom-nav">
+        <button class="btn btn-outline" id="btnPrev">
+          ⬅️ 上一題
+        </button>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn btn-success" id="btnCheckAnswer" style="font-size:1.15rem; padding:10px 22px;">
+            🌟 檢查答案
+          </button>
+          <button class="btn btn-primary" id="btnNext" style="font-size:1.15rem; padding:10px 22px;">
+            下一題 ➔
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 通關頒獎彈窗 -->
+  <div id="celebrationModal">
+    <div class="modal-content">
+      <div class="trophy-icon">🏆</div>
+      <h2 style="font-size:1.8rem; color:#1e293b; margin-bottom:8px;">太棒了！20 題全數完成！</h2>
+      <p style="font-size:1.1rem; color:#475569; margin-bottom:20px;">
+        恭喜你掌握了「盒子接數法」！畫圈很認真，嘴巴數得超棒！⭐
+      </p>
+      <div style="display:flex; gap:10px; justify-content:center;">
+        <button class="btn btn-primary" id="btnModalRestart" style="font-size:1.1rem; padding:12px 24px;">
+          🔄 再練習一次
+        </button>
+        <button class="btn btn-outline" id="btnModalClose">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- A4 列印專用區域 (包含學生卷與解答卷) -->
+  <div id="printSection" class="print-page" style="display:none;">
+    <!-- 頁面 1: 第 1~10 題 -->
+    <div class="print-header">
+      <div class="print-title">國中特教班 數學科 盒子接數加法學習單 (一)</div>
+      <div class="print-meta">
+        <span>班級：__________</span>
+        <span>姓名：__________</span>
+        <span>座號：__________</span>
+        <span>得分：__________</span>
+      </div>
+      <div class="print-instructions">
+        ★ 作答說明：只畫圈，不寫數字。嘴巴從盒子的數接著數，答案寫在右邊的框框。
+      </div>
+    </div>
+    <div class="print-grid" id="printGridPage1"></div>
+
+    <!-- 換頁 -->
+    <div style="page-break-after: always;"></div>
+
+    <!-- 頁面 2: 第 11~20 題 -->
+    <div class="print-header">
+      <div class="print-title">國中特教班 數學科 盒子接數加法學習單 (二)</div>
+      <div class="print-meta">
+        <span>班級：__________</span>
+        <span>姓名：__________</span>
+        <span>座號：__________</span>
+        <span>得分：__________</span>
+      </div>
+      <div class="print-instructions">
+        ★ 作答說明：只畫圈，不寫數字。嘴巴從盒子的數接著數，答案寫在右邊的框框。
+      </div>
+    </div>
+    <div class="print-grid" id="printGridPage2"></div>
+  </div>
+
+  <!-- 簡易輕量音效與互動邏輯 -->
+  <script>
+    // ==========================================
+    // 1. 20 道題目設定 (第一個數 1~50，後面的數 1~20)
+    // ==========================================
+    const DEFAULT_PROBLEMS = [
+      { a: 5, b: 4 },    // 圖片示範題目
+      { a: 8, b: 3 },
+      { a: 12, b: 5 },
+      { a: 15, b: 4 },
+      { a: 18, b: 6 },
+      { a: 21, b: 5 },
+      { a: 24, b: 7 },
+      { a: 27, b: 6 },
+      { a: 30, b: 8 },
+      { a: 33, b: 9 },
+      { a: 35, b: 10 },
+      { a: 38, b: 5 },
+      { a: 40, b: 7 },
+      { a: 42, b: 8 },
+      { a: 45, b: 6 },
+      { a: 26, b: 12 },
+      { a: 31, b: 14 },
+      { a: 36, b: 11 },
+      { a: 44, b: 13 },
+      { a: 48, b: 15 }
+    ];
+
+    let problems = JSON.parse(JSON.stringify(DEFAULT_PROBLEMS));
+    let currentIndex = 0;
+    let userCirclesCount = 0; // 目前畫了幾個圈
+    let countedSteps = 0;     // 目前接數點到第幾步
+    let soundEnabled = true;
+    let isAutoCounting = false;
+    let solvedStatus = new Array(20).fill(false);
+
+    // ==========================================
+    // 2. Web Audio 語音與音效引擎
+    // ==========================================
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx && AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.15, gainVal = 0.1) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(gainVal, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function playPop() {
+      playTone(480, 'triangle', 0.1, 0.15);
+    }
+
+    function playDing() {
+      playTone(880, 'sine', 0.35, 0.2);
+      setTimeout(() => playTone(1320, 'sine', 0.45, 0.2), 100);
+    }
+
+    function playSuccessFanfare() {
+      const notes = [523.25, 659.25, 783.99, 1046.5];
+      notes.forEach((freq, idx) => {
+        setTimeout(() => playTone(freq, 'triangle', 0.25, 0.2), idx * 120);
+      });
+    }
+
+    function playBuzzer() {
+      playTone(220, 'sawtooth', 0.25, 0.15);
+    }
+
+    // Web Speech API 朗讀
+    function speakText(text, rate = 0.85, callback = null) {
+      if (!soundEnabled || !window.speechSynthesis) {
+        if (callback) callback();
+        return;
+      }
+      window.speechSynthesis.cancel(); // 停止先前的朗讀
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'zh-TW';
+      utter.rate = rate; // 略慢，適合特教班學生吸收
+      utter.pitch = 1.05;
+      if (callback) {
+        utter.onend = callback;
+        utter.onerror = callback;
+      }
+      window.speechSynthesis.speak(utter);
+    }
+
+    // ==========================================
+    // 3. 介面初始化與渲染
+    // ==========================================
+    function init() {
+      renderQuestionTabs();
+      loadProblem(currentIndex);
+      setupEventListeners();
+    }
+
+    function renderQuestionTabs() {
+      const container = document.getElementById('questionTabs');
+      container.innerHTML = '';
+      problems.forEach((p, idx) => {
+        const chip = document.createElement('div');
+        chip.className = `q-chip ${idx === currentIndex ? 'active' : ''} ${solvedStatus[idx] ? 'solved' : ''}`;
+        chip.textContent = idx + 1;
+        chip.title = `第 ${idx + 1} 題：${p.a} + ${p.b}`;
+        chip.addEventListener('click', () => {
+          if (idx !== currentIndex) {
+            loadProblem(idx);
+          }
+        });
+        container.appendChild(chip);
+      });
+    }
+
+    function loadProblem(index) {
+      currentIndex = index;
+      isAutoCounting = false;
+      const prob = problems[index];
+      const isScaffoldFaded = index >= 5; // 第 6 題起 (index >= 5) 褪除鷹架
+
+      // 更新題號與標題
+      document.getElementById('problemTitle').textContent = `第 ${index + 1} 題. ${prob.a} + ${prob.b} =`;
+      const stageHtml = isScaffoldFaded 
+        ? `<span style="color:#d97706; font-weight:800;">🚀 自主挑戰 (自己數圈)</span>` 
+        : `<span style="color:#2563eb; font-weight:800;">🔰 鷹架引導 (有提示)</span>`;
+      document.getElementById('problemProgressBadge').innerHTML = `題號 ${index + 1} / ${problems.length} &nbsp;|&nbsp; ${stageHtml}`;
+      document.getElementById('boxNumber').textContent = prob.a;
+
+      // 重設答案框
+      const ansInput = document.getElementById('ansInput');
+      ansInput.value = '';
+      ansInput.className = 'ans-box';
+      if (solvedStatus[index]) {
+        ansInput.value = prob.a + prob.b;
+        ansInput.classList.add('correct');
+      }
+
+      // 重設畫圈區
+      userCirclesCount = 0;
+      countedSteps = 0;
+      renderCircles();
+      updateCircleBadge();
+      renderChoices();
+
+      // 更新進度條樣式
+      renderQuestionTabs();
+
+      // 更新接數狀態
+      if (!isScaffoldFaded) {
+        document.getElementById('countingStatusText').innerHTML = 
+          `🗣️ 題目加 <strong>${prob.b}</strong>，先在虛線區畫 <strong>${prob.b}</strong> 個圈圈喔！`;
+      } else {
+        document.getElementById('countingStatusText').innerHTML = 
+          `🎯 <strong>自主挑戰</strong>：題目加 <strong>${prob.b}</strong>，請自己看題目畫圈圈，畫好後點圈圈接著數！`;
+      }
+    }
+
+    function updateCircleBadge() {
+      const prob = problems[currentIndex];
+      const badge = document.getElementById('circleTargetBadge');
+      const notice = document.getElementById('circleCountNotice');
+      const isScaffoldFaded = currentIndex >= 5; // 第 6 題起褪除鷹架
+
+      if (!isScaffoldFaded) {
+        // 第 1~5 題：保留完整鷹架提示
+        badge.style.display = 'inline-flex';
+        badge.style.background = '';
+        badge.style.color = '';
+        badge.style.border = '';
+        badge.textContent = `需要畫圈：${userCirclesCount} / ${prob.b} 個`;
+
+        if (userCirclesCount === prob.b) {
+          badge.className = 'badge-counter complete';
+          badge.textContent = `✅ 剛好畫了 ${userCirclesCount} 個圈圈！棒！`;
+          notice.textContent = '🎉 圈圈畫好囉！點圈圈開始接著數！';
+        } else if (userCirclesCount > prob.b) {
+          badge.className = 'badge-counter overflow';
+          badge.textContent = `⚠️ 多畫了 ${userCirclesCount - prob.b} 個圈圈喔 (點圈圈可擦掉)`;
+          notice.textContent = '多了幾個圈圈，點圈圈擦掉它！';
+        } else {
+          badge.className = 'badge-counter';
+          notice.textContent = `還要再畫 ${prob.b - userCirclesCount} 個圈圈喔`;
+        }
+      } else {
+        // 第 6 題起：褪除鷹架！不提示畫了幾個、也不提示總共要畫幾個
+        badge.className = 'badge-counter';
+        badge.style.background = '#fef3c7';
+        badge.style.color = '#92400e';
+        badge.style.border = '2px solid #f59e0b';
+        badge.innerHTML = `🎯 <strong>自主挑戰</strong>：看題目加幾，自己數自己畫圈喔！`;
+        notice.textContent = '點一下畫一個圈 (自己數數看要畫幾個喔)';
+      }
+    }
+
+    function renderCircles() {
+      const grid = document.getElementById('circlesGrid');
+      grid.innerHTML = '';
+      const prob = problems[currentIndex];
+
+      for (let i = 0; i < userCirclesCount; i++) {
+        const circle = document.createElement('div');
+        circle.className = 'count-circle';
+        circle.setAttribute('data-index', i);
+
+        // 如果目前正在接數，顯示接數的數字
+        if (i < countedSteps) {
+          circle.classList.add('counted');
+          circle.textContent = prob.a + (i + 1);
+          if (i === prob.b - 1) {
+            circle.classList.add('last-one');
+          }
+        } else {
+          circle.textContent = ''; // 只畫圈，不寫數字
+        }
+
+        // 點擊圈圈：如果還沒點數，或是點數模式
+        circle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          onCircleClick(i);
+        });
+
+        grid.appendChild(circle);
+      }
+    }
+
+    // 點擊單一圈圈
+    function onCircleClick(circleIdx) {
+      const prob = problems[currentIndex];
+      const isScaffoldFaded = currentIndex >= 5;
+
+      // 情況 A：圈圈數量剛好，進入接數狀態
+      if (userCirclesCount === prob.b) {
+        if (circleIdx < countedSteps) {
+          // 已經數過的圈圈，點擊可重聽該發音
+          const num = prob.a + circleIdx + 1;
+          playDing();
+          speakText(String(num));
+        } else if (circleIdx === countedSteps) {
+          // 正好點擊下一個待數的圈圈
+          countedSteps++;
+          const nextNum = prob.a + countedSteps;
+          playDing();
+          speakText(String(nextNum));
+          renderCircles();
+
+          if (countedSteps === prob.b) {
+            document.getElementById('countingStatusText').innerHTML = 
+              `🎉 數完了！最後一個數字是 <strong>${nextNum}</strong>，答案就是 <strong>${nextNum}</strong> 喔！寫在右邊框框！`;
+            speakText(`最後數到 ${nextNum}，答案就是 ${nextNum}`, 0.9);
+            const ansBox = document.getElementById('ansInput');
+            ansBox.focus();
+          } else {
+            document.getElementById('countingStatusText').innerHTML = 
+              `嘴巴接著數：<strong>${nextNum}</strong> ➔ 繼續點下一個圈圈！`;
+          }
+        } else {
+          // 學生跳著點後面的圈圈，溫馨提示依序數
+          playPop();
+          speakText(`請先點第 ${countedSteps + 1} 個圈圈接下去數喔！`);
+        }
+      } else {
+        // 情況 B：圈圈數量還沒滿或畫多了
+        if (isScaffoldFaded && circleIdx === 0 && countedSteps === 0) {
+          // 第 6 題起自主挑戰，如果學生試圖從第 1 個圈開始接數，但圈數不對
+          playBuzzer();
+          if (userCirclesCount < prob.b) {
+            speakText(`題目是加 ${prob.b} 喔！圈圈好像畫不夠，自己數數看補畫圈圈！`);
+            document.getElementById('countingStatusText').innerHTML = 
+              `⚠️ 圈圈好像畫不夠喔！題目是加 <strong>${prob.b}</strong>，再數數看補畫圈圈！`;
+          } else {
+            speakText(`題目是加 ${prob.b} 喔！圈圈好像畫多了，點圈圈可以擦掉！`);
+            document.getElementById('countingStatusText').innerHTML = 
+              `⚠️ 圈圈好像畫多了！題目是加 <strong>${prob.b}</strong>，點圈圈可以擦掉！`;
+            userCirclesCount--;
+            renderCircles();
+            updateCircleBadge();
+          }
+        } else {
+          // 點擊圈圈進行擦除 (刪掉最後一個圈)
+          userCirclesCount--;
+          if (countedSteps > userCirclesCount) countedSteps = userCirclesCount;
+          playPop();
+          renderCircles();
+          updateCircleBadge();
+        }
+      }
+    }
+
+    // 增加一個圈
+    function addCircle() {
+      const prob = problems[currentIndex];
+      if (userCirclesCount >= 30) return; // 防呆上限
+      userCirclesCount++;
+      playPop();
+      renderCircles();
+      updateCircleBadge();
+
+      // 只有前 5 題才語音主動提示「畫好 N 個圈圈囉」
+      if (currentIndex < 5 && userCirclesCount === prob.b) {
+        speakText(`畫好 ${prob.b} 個圈圈囉！現在點圈圈接著數！`);
+      }
+    }
+
+    // 減少一個圈
+    function removeCircle() {
+      if (userCirclesCount > 0) {
+        userCirclesCount--;
+        if (countedSteps > userCirclesCount) countedSteps = userCirclesCount;
+        playPop();
+        renderCircles();
+        updateCircleBadge();
+      }
+    }
+
+    // 一鍵畫好
+    function autoFillCircles() {
+      const prob = problems[currentIndex];
+      userCirclesCount = prob.b;
+      countedSteps = 0;
+      playDing();
+      renderCircles();
+      updateCircleBadge();
+      speakText(`幫你畫好 ${prob.b} 個圈圈囉！點圈圈開始數吧！`);
+    }
+
+    // 清空圈圈
+    function clearCircles() {
+      userCirclesCount = 0;
+      countedSteps = 0;
+      playPop();
+      renderCircles();
+      updateCircleBadge();
+    }
+
+    // 電腦示範自動接著數 (視覺高亮 + 語音朗讀)
+    function autoCountDemo() {
+      const prob = problems[currentIndex];
+      if (userCirclesCount !== prob.b) {
+        userCirclesCount = prob.b;
+        renderCircles();
+        updateCircleBadge();
+      }
+
+      countedSteps = 0;
+      renderCircles();
+      isAutoCounting = true;
+
+      // 步驟 1：先念盒子
+      const box = document.getElementById('boxNumber');
+      box.style.transform = 'scale(1.15)';
+      document.getElementById('countingStatusText').innerHTML = `📦 先看盒子裡的數字：<strong>${prob.a}</strong>！`;
+      
+      speakText(`盒子裡的數是 ${prob.a}，嘴巴接著數`, 0.85, () => {
+        box.style.transform = 'scale(1)';
+        stepCount(1);
+      });
+
+      function stepCount(step) {
+        if (!isAutoCounting || step > prob.b) {
+          if (step > prob.b) {
+            const finalAns = prob.a + prob.b;
+            document.getElementById('countingStatusText').innerHTML = 
+              `🌟 接數結束！答案是 <strong>${finalAns}</strong>！請填入右方答案框！`;
+            speakText(`最後數到 ${finalAns}，答案就是 ${finalAns}`);
+            document.getElementById('ansInput').value = finalAns;
+            document.getElementById('ansInput').focus();
+          }
+          isAutoCounting = false;
+          return;
+        }
+
+        countedSteps = step;
+        const currentCountNum = prob.a + step;
+        renderCircles();
+        
+        // 高亮最後一個
+        const circles = document.querySelectorAll('.count-circle');
+        if (circles[step - 1]) {
+          circles[step - 1].classList.add('active-counting');
+        }
+
+        document.getElementById('countingStatusText').innerHTML = 
+          `🗣️ 接數第 ${step} 個圈 ➔ <strong>${currentCountNum}</strong>！`;
+
+        playTone(550 + step * 30, 'sine', 0.15, 0.15);
+        speakText(String(currentCountNum), 0.9, () => {
+          setTimeout(() => stepCount(step + 1), 250);
+        });
+      }
+    }
+
+    // 渲染四選一快速選項
+    function renderChoices() {
+      const prob = problems[currentIndex];
+      const correct = prob.a + prob.b;
+      const choicesRow = document.getElementById('choicesRow');
+      choicesRow.innerHTML = '';
+
+      // 產生 3 個常見錯誤選項 (例如: 差1、差2、沒進位)
+      const options = new Set();
+      options.add(correct);
+      options.add(correct - 1);
+      options.add(correct + 1);
+      options.add(correct + (prob.b <= 5 ? 2 : -2));
+
+      while (options.size < 4) {
+        options.add(correct + Math.floor(Math.random() * 7) - 3);
+      }
+
+      const arr = Array.from(options).sort(() => Math.random() - 0.5);
+
+      arr.forEach(val => {
+        const chip = document.createElement('div');
+        chip.className = 'choice-chip';
+        chip.textContent = val;
+        chip.addEventListener('click', () => {
+          document.getElementById('ansInput').value = val;
+          checkAnswer();
+        });
+        choicesRow.appendChild(chip);
+      });
+    }
+
+    // 檢查答案
+    function checkAnswer() {
+      const prob = problems[currentIndex];
+      const correctAns = prob.a + prob.b;
+      const inputEl = document.getElementById('ansInput');
+      const userVal = parseInt(inputEl.value.trim(), 10);
+
+      if (isNaN(userVal)) {
+        speakText('請先在右邊的框框寫答案喔！');
+        inputEl.focus();
+        return;
+      }
+
+      if (userVal === correctAns) {
+        // 答對了！
+        inputEl.className = 'ans-box correct';
+        solvedStatus[currentIndex] = true;
+        renderQuestionTabs();
+        playSuccessFanfare();
+        triggerConfetti();
+
+        speakText(`太棒了！答對了！${prob.a} 加 ${prob.b} 等於 ${correctAns}！`, 0.9, () => {
+          // 檢查是否全部完成
+          const allDone = solvedStatus.every(s => s === true);
+          if (allDone) {
+            document.getElementById('celebrationModal').style.display = 'flex';
+            speakText('恭喜你！全部 20 題都答對了！你是接數小達人！');
+          } else if (currentIndex < problems.length - 1) {
+            setTimeout(() => {
+              loadProblem(currentIndex + 1);
+            }, 800);
+          }
+        });
+      } else {
+        // 答錯
+        inputEl.className = 'ans-box wrong';
+        playBuzzer();
+        speakText('答案好像不太對喔，再跟著圈圈接著數一次看看！');
+        setTimeout(() => {
+          inputEl.classList.remove('wrong');
+        }, 1000);
+      }
+    }
+
+    // 隨機產生 20 道新題目 (第一個數 1~50，後面的數 1~20)
+    function randomizeProblems() {
+      const newProbs = [];
+      for (let i = 0; i < 20; i++) {
+        // 第一個數字 1~50
+        const a = Math.floor(Math.random() * 50) + 1;
+        // 後面的數字 1~20
+        const b = Math.floor(Math.random() * 20) + 1;
+        newProbs.push({ a, b });
+      }
+      problems = newProbs;
+      solvedStatus = new Array(20).fill(false);
+      loadProblem(0);
+      speakText('已經重新出了 20 道新的題目囉！開始挑戰吧！');
+    }
+
+    // ==========================================
+    // 4. 事件監聽
+    // ==========================================
+    function setupEventListeners() {
+      // 點擊虛線區畫圈
+      document.getElementById('circleWorkArea').addEventListener('click', (e) => {
+        if (e.target.classList.contains('count-circle')) return;
+        const prob = problems[currentIndex];
+        if (currentIndex < 5) {
+          // 前 5 題：有鷹架防呆提醒
+          if (userCirclesCount < prob.b) {
+            addCircle();
+          } else {
+            speakText(`已經畫好 ${prob.b} 個圈圈囉！請點圈圈開始接著數！`);
+          }
+        } else {
+          // 第 6 題起：自主挑戰，完全讓學生自己掌控要畫幾個圈
+          addCircle();
+        }
+      });
+
+      document.getElementById('btnAddCircle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        addCircle();
+      });
+
+      document.getElementById('btnRemoveCircle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeCircle();
+      });
+
+      document.getElementById('btnAutoFillCircles').addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentIndex >= 5) {
+          if (!confirm('第 6 題開始是自主挑戰階段，請學生先試著看題目自己畫圈喔！\n仍要使用一鍵畫圈輔助嗎？')) {
+            return;
+          }
+        }
+        autoFillCircles();
+      });
+
+      document.getElementById('btnClearCircles').addEventListener('click', (e) => {
+        e.stopPropagation();
+        clearCircles();
+      });
+
+      // 點擊盒子發音
+      document.getElementById('boxNumber').addEventListener('click', () => {
+        const prob = problems[currentIndex];
+        playDing();
+        speakText(`盒子裡的數是 ${prob.a}`);
+      });
+
+      // 聽電腦接數
+      document.getElementById('btnAutoCount').addEventListener('click', () => {
+        autoCountDemo();
+      });
+
+      document.getElementById('btnResetCount').addEventListener('click', () => {
+        countedSteps = 0;
+        isAutoCounting = false;
+        renderCircles();
+      });
+
+      // 朗讀指導語
+      document.getElementById('btnReadInstruction').addEventListener('click', () => {
+        speakText('只畫圈，不寫數字。嘴巴從盒子的數接著數，答案寫在右邊的框框。');
+      });
+
+      // 教師示範
+      document.getElementById('btnTeacherDemo').addEventListener('click', () => {
+        autoCountDemo();
+      });
+
+      // 隨機出題
+      document.getElementById('btnRandomize').addEventListener('click', () => {
+        if (confirm('確定要重新產生 20 題新的練習題嗎？')) {
+          randomizeProblems();
+        }
+      });
+
+      // 聲音開關
+      document.getElementById('btnSoundToggle').addEventListener('click', function() {
+        soundEnabled = !soundEnabled;
+        this.textContent = soundEnabled ? '🔊 聲音：開' : '🔇 聲音：關';
+        if (!soundEnabled && window.speechSynthesis) {
+          window.speechSynthesis.cancel();
+        }
+      });
+
+      // 檢查答案按鈕
+      document.getElementById('btnCheckAnswer').addEventListener('click', checkAnswer);
+
+      // 上一題 / 下一題
+      document.getElementById('btnPrev').addEventListener('click', () => {
+        if (currentIndex > 0) loadProblem(currentIndex - 1);
+      });
+
+      document.getElementById('btnNext').addEventListener('click', () => {
+        if (currentIndex < problems.length - 1) loadProblem(currentIndex + 1);
+      });
+
+      // 答案輸入框按 Enter
+      document.getElementById('ansInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          checkAnswer();
+        }
+      });
+
+      // 螢幕虛擬鍵盤 0~9
+      document.querySelectorAll('.key-btn[data-key]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.getAttribute('data-key');
+          const input = document.getElementById('ansInput');
+          if (input.value.length < 3) {
+            input.value += key;
+            playPop();
+          }
+        });
+      });
+
+      document.getElementById('btnKeyClear').addEventListener('click', () => {
+        const input = document.getElementById('ansInput');
+        input.value = input.value.slice(0, -1);
+        playPop();
+      });
+
+      document.getElementById('btnKeySubmit').addEventListener('click', checkAnswer);
+
+      // 通關彈窗按鈕
+      document.getElementById('btnModalRestart').addEventListener('click', () => {
+        document.getElementById('celebrationModal').style.display = 'none';
+        randomizeProblems();
+      });
+
+      document.getElementById('btnModalClose').addEventListener('click', () => {
+        document.getElementById('celebrationModal').style.display = 'none';
+      });
+
+      // A4 列印學習單
+      document.getElementById('btnPrintWorksheet').addEventListener('click', () => {
+        prepareAndPrintWorksheet();
+      });
+    }
+
+    // ==========================================
+    // 5. A4 學習單列印生成
+    // ==========================================
+    function prepareAndPrintWorksheet() {
+      const p1 = document.getElementById('printGridPage1');
+      const p2 = document.getElementById('printGridPage2');
+      p1.innerHTML = '';
+      p2.innerHTML = '';
+
+      const isTeacherKey = confirm('點「確定」列印【學生空白練習卷】\n點「取消」列印【教師紅字解答卷】');
+
+      problems.forEach((prob, idx) => {
+        const targetContainer = idx < 10 ? p1 : p2;
+        const item = document.createElement('div');
+        item.className = 'print-item';
+
+        const circlesHtml = !isTeacherKey 
+          ? `<div class="print-teacher-circles">${Array(prob.b).fill(0).map((_, i) => `<div class="print-mini-circle">${prob.a + i + 1}</div>`).join('')}</div>`
+          : '';
+
+        const ansHtml = !isTeacherKey ? `<span class="print-teacher-ans">${prob.a + prob.b}</span>` : '';
+
+        item.innerHTML = `
+          <div class="print-item-title">${idx + 1}. ${prob.a} + ${prob.b} =</div>
+          <div class="print-item-row">
+            <div class="print-box">${prob.a}</div>
+            <div class="print-arrow">➔</div>
+            <div class="print-circle-area">
+              <span class="print-circle-watermark">畫圈區（不寫數字，用嘴巴數）</span>
+              ${circlesHtml}
+            </div>
+            <div class="print-equal">=</div>
+            <div class="print-ans-box">${ansHtml}</div>
+          </div>
+        `;
+        targetContainer.appendChild(item);
+      });
+
+      const printSection = document.getElementById('printSection');
+      printSection.style.display = 'block';
+
+      setTimeout(() => {
+        window.print();
+        printSection.style.display = 'none';
+      }, 300);
+    }
+
+    // ==========================================
+    // 6. 輕量彩花特效 (純 Canvas，無外部依賴)
+    // ==========================================
+    function triggerConfetti() {
+      const canvas = document.createElement('canvas');
+      canvas.style.position = 'fixed';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100vw';
+      canvas.style.height = '100vh';
+      canvas.style.pointerEvents = 'none';
+      canvas.style.zIndex = '9999';
+      document.body.appendChild(canvas);
+
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#2563eb', '#e11d48', '#16a34a', '#ca8a04', '#9333ea', '#06b6d4'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.8) * 18,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          rot: Math.random() * 360
+        });
+      }
+
+      let frame = 0;
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.35; // 重力
+          p.alpha -= 0.015;
+          ctx.save();
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 70) {
+          requestAnimationFrame(animate);
+        } else {
+          document.body.removeChild(canvas);
+        }
+      }
+      animate();
+    }
+
+    // 啟動應用
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
